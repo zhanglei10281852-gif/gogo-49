@@ -323,7 +323,6 @@ func (i *Incident) Merge(other Incident, at time.Time) {
 	if other.LastSeen.After(i.LastSeen) {
 		i.LastSeen = other.LastSeen
 	}
-	i.Count += other.Count
 	ids := make(map[string]bool, len(i.EventIDs)+len(other.EventIDs))
 	for _, id := range i.EventIDs {
 		ids[id] = true
@@ -334,6 +333,7 @@ func (i *Incident) Merge(other Incident, at time.Time) {
 			ids[id] = true
 		}
 	}
+	i.Count = len(i.EventIDs)
 	sort.Strings(i.EventIDs)
 	if i.Status == IncidentResolved {
 		_ = i.TransitionTo(IncidentOpen, at, "matching activity resumed")
